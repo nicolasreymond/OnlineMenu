@@ -1,0 +1,7 @@
+{
+  "name": "online-menu",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
