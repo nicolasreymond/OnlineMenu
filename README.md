@@ -24,8 +24,25 @@ npm run dev
 
 The API listens on port `3000` by default. You can also run it with Docker Compose:
 
+### With Docker Compose
+
 ```bash
-docker compose up
+cd backend
+docker compose up --build
+```
+
+Stop the containers with:
+
+```bash
+docker compose down
+```
+
+### Build and run with Docker only
+
+```bash
+cd backend
+docker build -t onlinemenu-backend .
+docker run -p 3000:3000 onlinemenu-backend
 ```
 
 The database connection string is read from the `DATABASE_URL` environment variable. See `backend/compose.yml` for an example value.
