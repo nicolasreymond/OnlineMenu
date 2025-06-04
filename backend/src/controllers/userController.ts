@@ -46,12 +46,12 @@ export const getUserById = (req: Request, res: Response) => {
 
 // Create a new user
 export const createUser = (req: Request, res: Response) => {
-  const { email, passwordHash, firstName, lastName, role, isActive } = req.body;
+  const { username, email, passwordHash } = req.body;
   try {
     // insert new user into the database
     pool.query(
-      "INSERT INTO users (email, password_hash, first_name, last_name, role, is_active) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [email, passwordHash, firstName, lastName, role, isActive],
+      "INSERT INTO users (username, password_hash, email) VALUES ($1, $2, $3) RETURNING *",
+      [username, passwordHash, email],
       (error, results) => {
         if (error) {
           console.error("Error creating user:", error);
@@ -69,12 +69,12 @@ export const createUser = (req: Request, res: Response) => {
 // Update a user by ID
 export const updateUser = (req: Request, res: Response) => {
   const userId = req.params.id;
-  const { email, passwordHash, firstName, lastName, role, isActive } = req.body;
+  const { username, email, passwordHash } = req.body;
   try {
     // update user in the database
     pool.query(
-      "UPDATE users SET email = $1, password_hash = $2, first_name = $3, last_name = $4, role = $5, is_active = $6 WHERE id = $7 RETURNING *",
-      [email, passwordHash, firstName, lastName, role, isActive, userId],
+      "UPDATE users SET username = $1, password_hash = $2, email = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *",
+      [username, passwordHash, email, userId],
       (error, results) => {
         if (error) {
           console.error("Error updating user:", error);
@@ -94,23 +94,21 @@ export const updateUser = (req: Request, res: Response) => {
 
 // Delete a user by ID
 export const deleteUser = (req: Request, res: Response) => {
-  // never delete users, just deactivate them
   const userId = req.params.id;
   try {
-    // deactivate user in the database
     pool.query(
-      "UPDATE users SET is_active = false WHERE id = $1 RETURNING *",
+      "DELETE FROM users WHERE id = $1 RETURNING *",
       [userId],
       (error, results) => {
         if (error) {
-          console.error("Error deactivating user:", error);
+          console.error("Error deleting user:", error);
           return res.status(500).json({ error: "Internal server error" });
         }
         if (results.rows.length === 0) {
           return res.status(404).json({ error: "User not found" });
         }
         res.json({
-          message: "User deactivated successfully",
+          message: "User deleted successfully",
           user: results.rows[0],
         });
       }
