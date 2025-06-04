@@ -9,3 +9,12 @@ export interface MenuItem {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface MenuItemInput {
+  name: string;
+  price: number;
+  abv: number;
+  description: string;
+  image_url: string;
+  category_id: number;
+}
